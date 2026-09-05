@@ -59,6 +59,29 @@
                           (wire/wire-step t {:kind :request :interface "wl_surface"
                                              :request/name "commit" :object-id 2})))))
 
+(deftest tranche2-full-core-interface-coverage
+  (testing "13 core interfaces are modeled"
+    (is (= 13 (count model/core-interfaces)))
+    (doseq [n ["wl_display" "wl_registry" "wl_callback" "wl_surface" "wl_compositor"
+               "wl_shm" "wl_shm_pool" "wl_buffer" "wl_output" "wl_seat"
+               "wl_pointer" "wl_keyboard" "wl_touch"]]
+      (is (model/interface n) (str "missing interface " n))))
+  (testing "seat input objects are creatable through wire-step with new-ids"
+    (let [t (-> objects/empty-table
+                (objects/create 1 "wl_display" 1)
+                (objects/create 2 "wl_seat" 8))
+          {:keys [table allocated]}
+          (wire/wire-step t {:kind :request :interface "wl_seat"
+                             :request/name "get_pointer"
+                             :object-id 2 :new-ids ["wl_pointer"]})]
+      (is (= 1 (count allocated)))
+      (is (= "wl_pointer" (:interface/name (objects/object-of table (first allocated)))))))
+  (testing "wl_surface commit is a valid request on a live surface"
+    (let [t (-> objects/empty-table
+                (objects/create 1 "wl_surface" 6))]
+      (is (some? (:applied (wire/wire-step t {:kind :request :interface "wl_surface"
+                                              :request/name "commit" :object-id 1})))))))
+
 (deftest server-ids-are-above-the-line
   (is (= :client-assigned (objects/alloc-state 1)))
   (is (= :server-assigned (objects/alloc-state 0xff000000))))

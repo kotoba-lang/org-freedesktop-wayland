@@ -69,7 +69,131 @@
     [{:request/name "create_pool" :request/args [{:arg/name :id :arg/type :new-id}
                                                  {:arg/name :fd :arg/type :fd}
                                                  {:arg/name :size :arg/type :int}]}]
-    :events []}])
+    :events []}
+   {:interface/name "wl_shm_pool"
+    :interface/version 1
+    :spec/source "wayland core protocol wl_shm_pool"
+    :requests
+    [{:request/name "create_buffer" :request/args [{:arg/name :id :arg/type :new-id}
+                                                   {:arg/name :offset :arg/type :int}
+                                                   {:arg/name :width :arg/type :int}
+                                                   {:arg/name :height :arg/type :int}
+                                                   {:arg/name :stride :arg/type :int}
+                                                   {:arg/name :format :arg/type :uint}]}
+     {:request/name "destroy" :request/args []}
+     {:request/name "resize" :request/args [{:arg/name :size :arg/type :int}]}]
+    :events []}
+   {:interface/name "wl_buffer"
+    :interface/version 1
+    :spec/source "wayland core protocol wl_buffer"
+    :requests
+    [{:request/name "destroy" :request/args []}]
+    :events
+    [{:event/name "release" :event/args []}]}
+   {:interface/name "wl_output"
+    :interface/version 4
+    :spec/source "wayland core protocol wl_output"
+    :requests
+    [{:request/name "release" :request/args []}]
+    :events
+    [{:event/name "geometry" :event/args [{:arg/name :x :arg/type :int}
+                                          {:arg/name :y :arg/type :int}
+                                          {:arg/name :physical-width :arg/type :int}
+                                          {:arg/name :physical-height :arg/type :int}
+                                          {:arg/name :subpixel :arg/type :int}
+                                          {:arg/name :make :arg/type :string}
+                                          {:arg/name :model :arg/type :string}
+                                          {:arg/name :transform :arg/type :int}]}
+     {:event/name "mode" :event/args [{:arg/name :flags :arg/type :uint}
+                                      {:arg/name :width :arg/type :int}
+                                      {:arg/name :height :arg/type :int}
+                                      {:arg/name :refresh :arg/type :int}]}
+     {:event/name "done" :event/args [{:arg/name :name :arg/type :uint}]}
+     {:event/name "scale" :event/args [{:arg/name :factor :arg/type :int}]}]}
+   {:interface/name "wl_seat"
+    :interface/version 8
+    :spec/source "wayland core protocol wl_seat"
+    :requests
+    [{:request/name "get_pointer" :request/args [{:arg/name :id :arg/type :new-id}]
+      :request/creates "wl_pointer"}
+     {:request/name "get_keyboard" :request/args [{:arg/name :id :arg/type :new-id}]
+      :request/creates "wl_keyboard"}
+     {:request/name "get_touch" :request/args [{:arg/name :id :arg/type :new-id}]
+      :request/creates "wl_touch"}
+     {:request/name "release" :request/args []}]
+    :events
+    [{:event/name "capabilities" :event/args [{:arg/name :capabilities :arg/type :uint}]}
+     {:event/name "name" :event/args [{:arg/name :name :arg/type :string}]}]}
+   {:interface/name "wl_pointer"
+    :interface/version 8
+    :spec/source "wayland core protocol wl_pointer"
+    :requests
+    [{:request/name "set_cursor" :request/args [{:arg/name :serial :arg/type :uint}
+                                                {:arg/name :surface :arg/type :object}
+                                                {:arg/name :hotspot-x :arg/type :int}
+                                                {:arg/name :hotspot-y :arg/type :int}]}
+     {:request/name "release" :request/args []}]
+    :events
+    [{:event/name "enter" :event/args [{:arg/name :serial :arg/type :uint}
+                                       {:arg/name :surface :arg/type :object}
+                                       {:arg/name :surface-x :arg/type :fixed}
+                                       {:arg/name :surface-y :arg/type :fixed}]}
+     {:event/name "leave" :event/args [{:arg/name :serial :arg/type :uint}
+                                       {:arg/name :surface :arg/type :object}]}
+     {:event/name "motion" :event/args [{:arg/name :time :arg/type :uint}
+                                        {:arg/name :surface-x :arg/type :fixed}
+                                        {:arg/name :surface-y :arg/type :fixed}]}
+     {:event/name "button" :event/args [{:arg/name :serial :arg/type :uint}
+                                        {:arg/name :time :arg/type :uint}
+                                        {:arg/name :button :arg/type :uint}
+                                        {:arg/name :state :arg/type :uint}]}
+     {:event/name "axis" :event/args [{:arg/name :time :arg/type :uint}
+                                      {:arg/name :axis :arg/type :uint}
+                                      {:arg/name :value :arg/type :fixed}]}]}
+   {:interface/name "wl_keyboard"
+    :interface/version 8
+    :spec/source "wayland core protocol wl_keyboard"
+    :requests
+    [{:request/name "release" :request/args []}]
+    :events
+    [{:event/name "keymap" :event/args [{:arg/name :format :arg/type :uint}
+                                        {:arg/name :fd :arg/type :fd}
+                                        {:arg/name :size :arg/type :uint}]}
+     {:event/name "enter" :event/args [{:arg/name :serial :arg/type :uint}
+                                       {:arg/name :surface :arg/type :object}
+                                       {:arg/name :keys :arg/type :array}]}
+     {:event/name "leave" :event/args [{:arg/name :serial :arg/type :uint}
+                                       {:arg/name :surface :arg/type :object}]}
+     {:event/name "key" :event/args [{:arg/name :serial :arg/type :uint}
+                                     {:arg/name :time :arg/type :uint}
+                                     {:arg/name :key :arg/type :uint}
+                                     {:arg/name :state :arg/type :uint}]}
+     {:event/name "modifiers" :event/args [{:arg/name :serial :arg/type :uint}
+                                           {:arg/name :mods-depressed :arg/type :uint}
+                                           {:arg/name :mods-latched :arg/type :uint}
+                                           {:arg/name :mods-locked :arg/type :uint}
+                                           {:arg/name :group :arg/type :uint}]}]}
+   {:interface/name "wl_touch"
+    :interface/version 8
+    :spec/source "wayland core protocol wl_touch"
+    :requests
+    [{:request/name "release" :request/args []}]
+    :events
+    [{:event/name "down" :event/args [{:arg/name :serial :arg/type :uint}
+                                      {:arg/name :time :arg/type :uint}
+                                      {:arg/name :surface :arg/type :object}
+                                      {:arg/name :id :arg/type :int}
+                                      {:arg/name :x :arg/type :fixed}
+                                      {:arg/name :y :arg/type :fixed}]}
+     {:event/name "up" :event/args [{:arg/name :serial :arg/type :uint}
+                                    {:arg/name :time :arg/type :uint}
+                                    {:arg/name :id :arg/type :int}]}
+     {:event/name "motion" :event/args [{:arg/name :time :arg/type :uint}
+                                        {:arg/name :id :arg/type :int}
+                                        {:arg/name :x :arg/type :fixed}
+                                        {:arg/name :y :arg/type :fixed}]}
+     {:event/name "frame" :event/args []}
+     {:event/name "cancel" :event/args []}]}])
 
 (defn interface [name]
   (first (filter #(= name (:interface/name %)) core-interfaces)))
